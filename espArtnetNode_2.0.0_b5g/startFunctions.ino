@@ -191,7 +191,7 @@ void artStart() {
   #ifdef ENABLE_PORT_B
     // Add Group
     portB[0] = artRDM.addGroup(deviceSettings.portBnet, deviceSettings.portBsub);
-    e131 = (deviceSettings.portBprot == PROT_ARTNET_SACN) ? true : false;
+    bool e131 = (deviceSettings.portBprot == PROT_ARTNET_SACN) ? true : false;
     
     // WS2812 uses TYPE_DMX_OUT - the rest use the value assigned
     if (deviceSettings.portBmode == TYPE_WS2812)

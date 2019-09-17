@@ -505,6 +505,14 @@ bool ajaxSave(uint8_t page, DynamicJsonDocument &json) {
   }
 }
 
+char *IPAddressToCharArray(const IPAddress& address)
+{
+  static char szRet[20];
+  String str = String(address[0]) + "." + address[1] + "." + address[2] + "." + address[3];
+  str.toCharArray(szRet, 20);
+  return szRet;
+}
+
 void ajaxLoad(uint8_t page, DynamicJsonDocument &jsonReply) {
   // Create the needed arrays here - doesn't work within the switch below
   JsonArray ipAddress = jsonReply.createNestedArray("ipAddress");
@@ -541,11 +549,11 @@ void ajaxLoad(uint8_t page, DynamicJsonDocument &jsonReply) {
       jsonReply["wifiStatus"] = wifiStatus;
       
       if (isHotspot) {
-        jsonReply["ipAddressT"] = deviceSettings.hotspotIp.toString().c_str();
-        jsonReply["subAddressT"] = deviceSettings.hotspotSubnet.toString().c_str();
+        jsonReply["ipAddressT"] = IPAddressToCharArray(deviceSettings.hotspotIp);
+        jsonReply["subAddressT"] = IPAddressToCharArray(deviceSettings.hotspotSubnet);
       } else {
-        jsonReply["ipAddressT"] = deviceSettings.ip.toString().c_str();
-        jsonReply["subAddressT"] = deviceSettings.subnet.toString().c_str();
+        jsonReply["ipAddressT"] = IPAddressToCharArray(deviceSettings.ip);
+        jsonReply["subAddressT"] = IPAddressToCharArray(deviceSettings.subnet);
       }
 
       if (isHotspot && !deviceSettings.standAloneEnable) {

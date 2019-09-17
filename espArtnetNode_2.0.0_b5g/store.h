@@ -29,7 +29,8 @@ enum p_type {
   TYPE_DMX_OUT = 0,
   TYPE_RDM_OUT = 1,
   TYPE_DMX_IN = 2,
-  TYPE_WS2812 = 3
+  TYPE_WS2812 = 3,
+  TYPE_THEOBJECT = 4
 };
 
 enum p_protocol {
@@ -118,4 +119,3 @@ void eepromLoad() {
     while(1);
   }
 }
-
