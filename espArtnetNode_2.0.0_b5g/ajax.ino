@@ -150,7 +150,8 @@ bool ajaxSave(uint8_t page, DynamicJsonDocument &json) {
       break;
 
     case 4:     // Port A
-      {
+      #ifdef ENABLE_PORT_A
+      { 
         deviceSettings.portAprot = (uint8_t)json["portAprot"];
         bool e131 = (deviceSettings.portAprot == PROT_ARTNET_SACN) ? true : false;
         
@@ -177,7 +178,7 @@ bool ajaxSave(uint8_t page, DynamicJsonDocument &json) {
         uint8_t oldMode = deviceSettings.portAmode;
         bool updatePorts = false;
 
-        #ifndef ONE_PORT
+        #ifdef ENABLE_PORT_B
           // RDM and DMX input can't run together
           if (newMode == TYPE_DMX_IN && deviceSettings.portBmode == TYPE_RDM_OUT) {
             deviceSettings.portBmode = TYPE_DMX_OUT;
@@ -322,10 +323,11 @@ bool ajaxSave(uint8_t page, DynamicJsonDocument &json) {
         eepromSave();
         return true;
       }
+      #endif
       break;
 
     case 5:     // Port B
-      #ifndef ONE_PORT
+      #ifdef ENABLE_PORT_B
       {
         deviceSettings.portBprot = (uint8_t)json["portBprot"];
         bool e131 = (deviceSettings.portBprot == PROT_ARTNET_SACN) ? true : false;
