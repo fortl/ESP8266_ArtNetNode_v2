@@ -539,11 +539,11 @@ void ajaxLoad(uint8_t page, DynamicJsonDocument &jsonReply) {
       jsonReply["wifiStatus"] = wifiStatus;
       
       if (isHotspot) {
-        //jsonReply["ipAddressT"] = deviceSettings.hotspotIp.toString();
-        //jsonReply["subAddressT"] = deviceSettings.hotspotSubnet.toString();
+        jsonReply["ipAddressT"] = deviceSettings.hotspotIp.toString().c_str();
+        jsonReply["subAddressT"] = deviceSettings.hotspotSubnet.toString().c_str();
       } else {
-        jsonReply["ipAddressT"] = deviceSettings.ip.toString();
-        jsonReply["subAddressT"] = deviceSettings.subnet.toString();
+        jsonReply["ipAddressT"] = deviceSettings.ip.toString().c_str();
+        jsonReply["subAddressT"] = deviceSettings.subnet.toString().c_str();
       }
 
       if (isHotspot && !deviceSettings.standAloneEnable) {
