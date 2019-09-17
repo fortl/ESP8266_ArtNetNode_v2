@@ -576,6 +576,10 @@ void ajaxLoad(uint8_t page, DynamicJsonDocument &jsonReply) {
           case TYPE_WS2812:
             jsonReply["portAStatus"] = "WS2812 mode";
             break;
+
+          case TYPE_THEOBJECT:
+            jsonReply["portAStatus"] = "TheObject";
+            break;
         }
         switch (deviceSettings.portBmode) {
           case TYPE_DMX_OUT:

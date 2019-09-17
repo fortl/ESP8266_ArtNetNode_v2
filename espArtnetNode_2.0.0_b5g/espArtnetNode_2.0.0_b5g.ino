@@ -47,7 +47,7 @@ extern "C" {
   extern struct rst_info resetInfo;
 }
 
-#define FIRMWARE_VERSION "v2.0.0 (beta 5g)"
+#define FIRMWARE_VERSION "v2.0.0 (beta, TheObject)"
 #define ART_FIRM_VERSION 0x0200   // Firmware given over Artnet (2 bytes)
 
 
@@ -76,6 +76,7 @@ extern "C" {
   #define WS2812_ALLOW_INT_DOUBLE false
   
 #else
+  #define ENABLE_PORT_A
   #define ENABLE_PORT_B
   #define DMX_DIR_A 5   // D1
   #define DMX_DIR_B 16  // D0
@@ -173,6 +174,7 @@ const char PROGMEM mainPage[] = "<!DOCTYPE html><meta content='text/html; charse
     "<option value=1>DMX Output with RDM"
     "<option value=2>DMX Input"
     "<option value=3>LED Pixels - WS2812"
+    "<option value=4>TheObject"
   "</select>"
   "<p class=left>Protocol:<p class=right><select class=select name=portAprot>"
     "<option value=0>Artnet v4"
@@ -503,11 +505,30 @@ void loop(void){
   #endif
 }
 
+void setObjectLed (char address, char value) {
+  uint8_t summ = address;
+  uint8_t data;
+  Serial.write(address);
+  data = '0' + (value>>4);
+  summ = summ ^ data;
+  Serial.write(data);
+  data = '0' + (value&0x0f);
+  summ = summ ^ data;
+  Serial.write(data);
+  Serial.write('0' + ((summ>>4) ^ (summ&0x0f)));
+  Serial.write('\n');
+}
+
 void dmxHandle(uint8_t group, uint8_t port, uint16_t numChans, bool syncEnabled) {
  
  #ifdef ENABLE_PORT_A
   if (portA[0] == group) {
-    if (deviceSettings.portAmode == TYPE_WS2812) {
+    if (deviceSettings.portAmode == TYPE_THEOBJECT) {
+      if (port != portA[1]) return;
+      uint8_t* a = artRDM.getDMX(group, port);
+      setObjectLed(a[0], a[1]);
+      
+    } else if (deviceSettings.portAmode == TYPE_WS2812) {
       
       #ifndef ESP_01
         setStatusLed(STATUS_LED_A, GREEN);

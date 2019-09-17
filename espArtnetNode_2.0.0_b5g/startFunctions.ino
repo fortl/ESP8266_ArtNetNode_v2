@@ -83,7 +83,10 @@ void doNodeReport() {
 
 void portSetup() {
   #ifdef ENABLE_PORT_A
-    if (deviceSettings.portAmode == TYPE_DMX_OUT || deviceSettings.portAmode == TYPE_RDM_OUT) {
+    if (deviceSettings.portAmode == TYPE_THEOBJECT) {
+      Serial.begin(19200);
+      
+    } else if (deviceSettings.portAmode == TYPE_DMX_OUT || deviceSettings.portAmode == TYPE_RDM_OUT) {
       #ifndef ESP_01
         setStatusLed(STATUS_LED_A, BLUE);
       #endif
@@ -149,15 +152,15 @@ void artStart() {
 
   // Set firmware
   artRDM.setFirmwareVersion(ART_FIRM_VERSION);
-
+  bool e131;
+  
   #ifdef ENABLE_PORT_A
     // Add Group
     portA[0] = artRDM.addGroup(deviceSettings.portAnet, deviceSettings.portAsub);
     
-    bool e131 = (deviceSettings.portAprot == PROT_ARTNET_SACN) ? true : false;
+    e131 = (deviceSettings.portAprot == PROT_ARTNET_SACN) ? true : false;
   
-    // WS2812 uses TYPE_DMX_OUT - the rest use the value assigned
-    if (deviceSettings.portAmode == TYPE_WS2812)
+    if ((deviceSettings.portAmode == TYPE_WS2812) || (deviceSettings.portAmode == TYPE_THEOBJECT))
       portA[1] = artRDM.addPort(portA[0], 0, deviceSettings.portAuni[0], TYPE_DMX_OUT, deviceSettings.portAmerge);
     else
       portA[1] = artRDM.addPort(portA[0], 0, deviceSettings.portAuni[0], deviceSettings.portAmode, deviceSettings.portAmerge);
@@ -191,7 +194,7 @@ void artStart() {
   #ifdef ENABLE_PORT_B
     // Add Group
     portB[0] = artRDM.addGroup(deviceSettings.portBnet, deviceSettings.portBsub);
-    bool e131 = (deviceSettings.portBprot == PROT_ARTNET_SACN) ? true : false;
+    e131 = (deviceSettings.portBprot == PROT_ARTNET_SACN) ? true : false;
     
     // WS2812 uses TYPE_DMX_OUT - the rest use the value assigned
     if (deviceSettings.portBmode == TYPE_WS2812)
